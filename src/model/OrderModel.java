@@ -50,13 +50,13 @@ public class OrderModel {
     }
     private void validateStock(Order order){
         for(Product product : order.getProductList()){
-            if (product.getQuantity() <= 0){
+            if (product.quantity() <= 0){
                 order.setState(OrderState.CANCELLED);
                 throw new ValidationException(
                         "La cantidad solicitada del producto es insuficiente");
             }
 
-            if (product.getQuantity() > product.getStock()){
+            if (product.quantity() > product.stock()){
                 order.setState(OrderState.CANCELLED);
                 throw new ValidationException(
                         "La cantidad solicitada del producto supera la existencia");
@@ -75,7 +75,7 @@ public class OrderModel {
         double sum = 0;
 
         for (Product product : order.getProductList()){
-            sum += product.getPrice() * product.getQuantity();
+            sum += product.price() * product.quantity();
         }
 
         order.setSubtotal(sum);

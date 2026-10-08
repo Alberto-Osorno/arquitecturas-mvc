@@ -100,8 +100,8 @@ public class OrderView {
         System.out.println("-----------------------------------------");
 
         for(Product product : order.getProductList()){
-            double productTotalPrice = product.getQuantity() * product.getPrice();
-            System.out.println(product.getQuantity() + " | " + product.getName() + " | $" + product.getPrice() + " | $" + productTotalPrice);
+            double productTotalPrice = product.quantity() * product.price();
+            System.out.println(product.quantity() + " | " + product.name() + " | $" + product.price() + " | $" + productTotalPrice);
         }
 
         System.out.println("-----------------------------------------");
