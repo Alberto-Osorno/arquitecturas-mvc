@@ -1,6 +1,7 @@
 package view;
 
 import model.Order;
+import model.OrderObserver;
 import model.Product;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.Scanner;
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 
-public class OrderView {
+public class OrderView implements OrderObserver {
     private final Scanner scan = new Scanner(System.in);
 
     public Order captureOrder(){
@@ -114,5 +115,11 @@ public class OrderView {
 
     public void printError(String error){
         System.out.println("\n[ERROR] " + error);
+    }
+
+    @Override
+    public void update(Order order, String operation) {
+        System.out.println("\n[NOTIFICACIÓN OBSERVER] " + operation + ":");
+        printOrder(order);
     }
 }

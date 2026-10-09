@@ -7,18 +7,42 @@ import view.OrderView;
 
 public class OrderController {
     private final OrderModel model;
-    private final OrderView view;
+    private OrderView view;
 
     public OrderController(OrderModel model, OrderView view){
         this.model = model;
         this.view = view;
+        if (this.view != null) {
+            this.model.addObserver(this.view);
+        }
+    }
+
+    public void setView(OrderView view) {
+        if (this.view != null) {
+            this.model.removeObserver(this.view);
+        }
+        this.view = view;
+        if (this.view != null) {
+            this.model.addObserver(this.view);
+        }
+    }
+
+    public OrderView getView() {
+        return view;
     }
 
     public void registerOrder(){
         try {
             Order order = view.captureOrder();
-            Order result = model.registerOrder(order);
-            view.printOrder(result);
+            model.registerOrder(order);
+        } catch (ValidationException e){
+            view.printError(e.getMessage());
+        }
+    }
+
+    public void registerOrder(Order order){
+        try {
+            model.registerOrder(order);
         } catch (ValidationException e){
             view.printError(e.getMessage());
         }
@@ -26,7 +50,11 @@ public class OrderController {
 
     public void consultOrder(){
         int orderID = view.consultOrder();
-        Order result = model.consultOrder(orderID);
+        consultOrder(orderID);
+    }
+
+    public void consultOrder(int orderId){
+        Order result = model.consultOrder(orderId);
 
         if (result == null) {
             view.printError("Pedido no encontrado");
@@ -34,5 +62,17 @@ public class OrderController {
         }
 
         view.printOrder(result);
+    }
+
+    public void registrarPedido() {
+        registerOrder();
+    }
+
+    public void registrarPedido(Order order) {
+        registerOrder(order);
+    }
+
+    public void consultarPedido(int id) {
+        consultOrder(id);
     }
 }

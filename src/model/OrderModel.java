@@ -2,12 +2,31 @@ package model;
 
 import exceptions.ValidationException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class OrderModel {
     private final Map<Integer, Order> orderMap = new HashMap<>();
+    private final List<OrderObserver> observers = new ArrayList<>();
     private int idCounter = 1;
+
+    public void addObserver(OrderObserver observer) {
+        if (observer != null && !observers.contains(observer)) {
+            observers.add(observer);
+        }
+    }
+
+    public void removeObserver(OrderObserver observer) {
+        observers.remove(observer);
+    }
+
+    public void notifyObservers(Order order, String operation) {
+        for (OrderObserver observer : observers) {
+            observer.update(order, operation);
+        }
+    }
 
     public Order registerOrder(Order order){
         //Se realizan las validaciones básicas sobre el pedido
@@ -66,9 +85,13 @@ public class OrderModel {
 
     private void calculateOrder(Order order){
         calculateSubtotal(order);
+        notifyObservers(order, "Cálculo de subtotal");
         calculateDiscount(order);
+        notifyObservers(order, "Cálculo de descuento");
         calculateTaxes(order);
+        notifyObservers(order, "Cálculo de impuestos");
         calculateTotal(order);
+        notifyObservers(order, "Cálculo del total");
     }
 
     private void calculateSubtotal(Order order){
